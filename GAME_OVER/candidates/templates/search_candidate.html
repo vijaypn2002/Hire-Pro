@@ -1,0 +1,430 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Detail</title>
+    <!-- Bootstrap CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS for animations -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        .alert-custom {
+            margin: 20px;
+            padding: 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff3cd;
+            color: #856404;
+            position: relative;
+        }
+
+        .alert-custom strong {
+            font-size: 20px;
+        }
+
+        .alert-custom .icon {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #856404;
+        }
+
+        .alert-custom p {
+            margin-left: 50px;
+        }
+
+        .alert-custom .retry-btn {
+            margin-top: 10px;
+            background-color: #856404;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .alert-custom .retry-btn:hover {
+            background-color: #704e03;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+
+        header {
+            background-color: #044f81;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            width: 100%;
+            z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .logo {
+            width: 200px;
+            filter: brightness(0) invert(1);
+            margin-top: 10px;
+            float: left;
+            margin-left: 20px;
+        }
+
+        footer {
+            background-color: #044f81;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 100px auto 80px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .candidate-detail {
+            color: #000;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .detail {
+            flex: 1 1 48%;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #f2f2f2;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .detail:hover {
+            transform: scale(1.05);
+        }
+
+        .detail table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .detail th, .detail td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .detail th {
+            background-color: #e9ecef;
+        }
+
+        .detail h2 {
+            margin-top: 0;
+        }
+
+        .action-btns {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .action-btns .left-buttons {
+            display: flex;
+        }
+
+        .action-btns a.btn-edit,
+        .action-btns button.btn-delete {
+            padding: 10px 25px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #044f81;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .action-btns a.btn-edit:hover,
+        .action-btns button.btn-delete:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-download {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-download:hover {
+            background-color: #218838;
+        }
+
+        .green-text {
+            color: #28a745 !important;
+            font-weight: bold;
+            text-decoration: none !important;
+            transition: color 0.3s;
+        }
+
+        .green-text:hover {
+            color: #218838 !important;
+        }
+
+        .no-candidate {
+            text-align: center;
+            color: #1b2464;
+            font-size: 1.5rem;
+            margin-top: 50px;
+        }
+
+        .sad-face {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #dca435;
+        }
+
+        .sad-face img {
+            width: 330px; /* Adjusted size */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="{% url 'home' %}">
+        <img src="{% static 'candidates/logoo.png' %}" alt="Hire-Pro Logo" class="logo">
+    </a>
+    <h1>Candidate Details</h1>
+</header>
+
+<div class="container">
+    {% if candidate %}
+    <div id="detailsToDownload">
+        <div class="candidate-detail">
+            <div class="detail">
+                <h2>Personal Information</h2>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ candidate.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Position Applied</th>
+                        <td>{{ candidate.job_title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Interview Status</th>
+                        <td>{{ candidate.interview_status }}</td>
+                    </tr>
+                    <tr>
+                        <th>Notice Period</th>
+                        <td>{{ candidate.notice_period }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="detail">
+                <h2>Contact Information</h2>
+                <table>
+                    <tr>
+                        <th>Location</th>
+                        <td>{{ candidate.location }}</td>
+                    </tr>
+                    <tr>
+                        <th>Contact Number</th>
+                        <td>{{ candidate.contact_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email ID</th>
+                        <td>{{ candidate.email_id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mode of interview</th>
+                        <td>{{ candidate.sourcer }}</td>
+                    </tr>
+                    <tr>
+                        <th>Source</th>
+                        <td>{{ candidate.source }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="detail">
+                <h2>Employment Details</h2>
+                <table>
+                    <tr>
+                        <th>Current Company</th>
+                        <td>{{ candidate.current_company }}</td>
+                    </tr>
+                    <tr>
+                        <th>Current Position</th>
+                        <td>{{ candidate.current_position }}</td>
+                    </tr>
+                    <tr>
+                        <th>Last Working Day</th>
+                        <td>{{ candidate.last_working_day }}</td>
+                    </tr>
+                    <tr>
+                        <th>Experience (Years/Months)</th>
+                        <td>{{ candidate.experience_years_months }}</td>
+                    </tr>
+                    <tr>
+                        <th>Relevant Experience</th>
+                        <td>{{ candidate.relevant_experience }}</td>
+                    </tr>
+                    <tr>
+                        <th>Current Salary (LPA)</th>
+                        <td>{{ candidate.current_salary_lpa }}</td>
+                    </tr>
+                    <tr>
+                        <th>Expected Salary (LPA)</th>
+                        <td>{{ candidate.expected_salary_lpa }}</td>
+                    </tr>
+                    <tr>
+                        <th>Evaluation Link</th>
+                        <td>
+                            {% if candidate.evaluation_link %}
+                                <a href="{{ candidate.evaluation_link }}" target="_blank" class="green-text">VIEW PAGE</a>
+                            {% else %}
+                                <strong>None</strong>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="detail">
+                <h2>Salary and Interview Details</h2>
+                <table>
+                    <tr>
+                        <th>Internal Screening</th>
+                        <td>{{ candidate.interview_date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Interviewer</th>
+                        <td>{{ candidate.interviewer }}</td>
+                    </tr>
+                    <tr>
+                        <th>Stage</th>
+                        <td>{{ candidate.stage }}</td>
+                    </tr>
+                    <tr>
+                        <th>Sub Stage</th>
+                        <td>{{ candidate.sub_stage }}</td>
+                    </tr>
+                    <tr>
+                        <th>Other Offers (LPA)</th>
+                        <td>{{ candidate.other_offers_lpa }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date of Interview 2</th>
+                        <td>{{ candidate.internal_screening }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date of Interview 3</th>
+                        <td>{{ candidate.date_of_interview_2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Joined Date</th>
+                        <td>{{ candidate.date_of_interview_3 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Remark</th>
+                        <td>{{ candidate.remark }}</td>
+                    </tr>
+                    <tr>
+                        <th>Resume</th>
+                        <td><a href="{{ candidate.resume.url }}" target="_blank" class="green-text">VIEW RESUME</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="action-btns">
+        <div class="left-buttons">
+            <button class="btn-download" id="downloadPdf">Download as PDF</button>
+        </div>
+        <div>
+            <a href="{% url 'candidate_edit' candidate.id %}" class="btn btn-edit">Edit</a>
+            <form action="{% url 'candidate_delete' candidate.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-delete">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-candidate">
+        <div class="sad-face">
+            <img src="{% static 'candidates/search2.gif' %}" alt="No candidate found">
+        </div>
+        <div class="alert alert-custom text-center" role="alert">
+            <p>
+                <strong>No Results Found!</strong> Unfortunately, we couldn't find any candidate with the provided mobile number. 
+                <br>Please check the number and try again or contact support if you need further assistance.
+            </p>
+            <a href="{% url 'home' %}" class="retry-btn">Retry Search</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jsPDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+    document.getElementById('downloadPdf').addEventListener('click', function() {
+        const { jsPDF } = window.jspdf;
+
+        html2canvas(document.querySelector('#detailsToDownload')).then(canvas => {
+            const pdf = new jsPDF();
+            const imgData = canvas.toDataURL('image/png');
+            const imgProps= pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('candidate-details.pdf');
+        });
+    });
+</script>
+
+<footer>
+    <p>Copyright © 2024 All rights reserved with Learnfluence Education Private Limited</p>
+</footer>
+
+</body>
+</html>

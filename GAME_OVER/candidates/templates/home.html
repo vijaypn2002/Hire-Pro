@@ -1,0 +1,799 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicant Tracking System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Reset CSS */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 17px; /* Increased from the standard 16px to scale up slightly */
+        }
+
+        body {
+            font-family: Arial, sans-serif; /* Reverting to the old font */
+            line-height: 1.6;
+            background-color: #ffffff;
+            color: #333;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+        }
+
+        /* Header */
+        header {
+            background-color: #044f81; /* Company primary color */
+            color: #fff; /* White text color */
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            animation: slideInDown 1s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            width: 250px; /* Adjust as needed */
+            filter: brightness(0) invert(1); /* Make the logo white */
+        }
+
+        .header-content {
+            margin: 0 auto;
+            max-width: 600px;
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+            font-size: 46px; /* Increased font size */
+            font-weight: bold;
+        }
+
+        header p {
+            font-size: 19px; /* Slightly increased font size */
+            margin-top: 10px;
+        }
+
+        .copy-link {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background-color: #ffc107;
+            color: #044f81;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .copy-link i {
+            font-size: 20px;
+            animation: rotate 2s linear infinite;
+        }
+
+        .copy-link.copied {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .copy-link.copied i {
+            animation: none;
+            content: '\f00c'; /* Font Awesome check mark */
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #fefefe;
+            padding: 45px 15px;
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+            animation: bounceIn 1.5s ease-in-out;
+        }
+
+        nav ul li a {
+            color: #044f81;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding: 18px 35px; /* Increased padding */
+            border: 2px solid #044f81;
+            border-radius: 10px;
+            background-color: transparent;
+            font-size: 19px; /* Increased font size */
+        }
+
+        nav ul li a:hover {
+            color: #fff;
+            background-color: #044f81;
+        }
+
+        .admin-button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .admin-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            color: #929699; /* Set to grey */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .admin-button i {
+            font-size: 38px; /* Increased icon size */
+        }
+
+        .settings-text {
+            color: #6c757d; /* Set to grey */
+            font-size: 15px;
+            margin-top: 5px;
+            text-align: center; /* Ensure centered alignment */
+        }
+
+        /* Main content */
+        main {
+            padding: 25px; /* Increased padding */
+            text-align: center;
+            animation: fadeInUp 2s ease-in-out;
+            transform: scale(1.05); /* Scale up content slightly */
+        }
+
+        .features-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            margin-top: 50px;
+            gap: 20px;
+            flex-wrap: nowrap; /* Ensure no wrapping */
+            animation: slideInUp 2s ease-in-out;
+        }
+
+        .feature {
+            width: 330px; /* Increased width */
+            padding: 25px; /* Increased padding */
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            flex: 0 0 330px; /* Ensure fixed width */
+            margin-bottom: 20px;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature i {
+            font-size: 52px; /* Increased icon size */
+            color: #ffc107;
+            margin-bottom: 20px;
+        }
+
+        .feature h2 {
+            font-size: 26px; /* Increased font size */
+            margin-bottom: 10px;
+            color: #044f81;
+        }
+
+        .feature p {
+            font-size: 17px; /* Slightly increased font size */
+            color: #666;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 30px;
+            border: none;
+            width: 50%;
+            border-radius: 10px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: zoomIn 0.3s ease-in-out;
+            position: relative;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            font-size: 28px;
+            color: #044f81;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .modal-content a {
+            color: #044f81;
+            text-decoration: underline;
+        }
+
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #044f81;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        .footer-buttons {
+            margin-top: 10px;
+        }
+
+        .footer-buttons a {
+            margin: 0 10px;
+            font-size: 18px;
+            color: #fff; /* Set to white */
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: color 0.3s ease;
+            font-weight: 600;
+        }
+
+        .footer-buttons a:hover {
+            color: #ffc107; /* Golden yellow on hover */
+        }
+
+        .social-icons {
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            margin: 0 10px;
+            font-size: 24px;
+            color: #fff; /* White icon color */
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #ffc107; /* Golden yellow hover color */
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 50%;
+            right: -60px;
+            transform: translateY(-50%);
+            background-color: #044f81;
+            border-radius: 10px 0 0 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: right 0.3s ease-in-out;
+        }
+
+        .sidebar:hover {
+            right: 0;
+        }
+
+        .floating-button {
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .floating-button:hover {
+            background-color: #20B954;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .floating-button i {
+            font-size: 28px;
+        }
+
+        /* Tooltip for Sidebar */
+        .floating-button:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: -150px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        .floating-button:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .floating-button.linkedin {
+            background-color: #0077b5;
+        }
+
+        .floating-button.linkedin:hover {
+            background-color: #005f8d;
+        }
+
+        .floating-button.shine {
+            background-color: #f4c20d;
+        }
+
+        .floating-button.shine:hover {
+            background-color: #e0af00;
+        }
+
+        .floating-button.settings {
+            background-color: #044f81;
+        }
+
+        .floating-button.settings:hover {
+            background-color: #033d60;
+        }
+
+        .floating-button.indeed {
+            background-color: #003A9B;
+        }
+
+        .floating-button.indeed:hover {
+            background-color: #002A7B;
+        }
+
+        .floating-button.timesjob {
+            background-color: #D32F2F;
+        }
+
+        .floating-button.timesjob:hover {
+            background-color: #B71C1C;
+        }
+
+        .floating-button.gmeet {
+            background-color: #0F9D58;
+        }
+
+        .floating-button.gmeet:hover {
+            background-color: #0A7D43;
+        }
+
+        .floating-button.teams {
+            background-color: #6264A7;
+        }
+
+        .floating-button.teams:hover {
+            background-color: #4B4E93;
+        }
+
+        .floating-button.youtube {
+            background-color: #FF0000;
+        }
+
+        .floating-button.youtube:hover {
+            background-color: #CC0000;
+        }
+
+        .floating-button.twitter {
+            background-color: #1DA1F2;
+        }
+
+        .floating-button.twitter:hover {
+            background-color: #0d8ded;
+        }
+
+        .floating-button.facebook {
+            background-color: #1877F2;
+        }
+
+        .floating-button.facebook:hover {
+            background-color: #0f67d1;
+        }
+
+        .floating-button.website {
+            background-color: #044f81;
+        }
+
+        .floating-button.website:hover {
+            background-color: #033d60;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <header>
+        <a href="{% url 'home' %}">
+            <img src="{% static 'candidates/logoo.png' %}" alt="Hire-Pro Logo" class="logo">
+        </a>        
+        <div class="header-content">
+            <h1>Hire-Pro</h1>
+            <p>Streamline your hiring process with our advanced ATS platform.</p>
+        </div>
+        <button id="copyLinkBtn" class="copy-link">
+            <i class="fas fa-link"></i> Copy Apply Link
+        </button>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="{% url 'add_candidate' %}" class="button">Add Candidate</a></li>
+            <li><a href="{% url 'reports_home' %}" class="button">Administration/Reports</a></li>
+            <li><a href="{% url 'interviewers_list' %}" class="button">Recruitment Overview</a></li>  
+            <li><a href="{% url 'view_submissions' %}" class="button">Candidate Drive</a></li>
+            <li><a href="{% url 'job_dashboard' %}" class="button">Job Openings/Closed</a></li>
+            <li>
+                <div class="admin-button-container">
+                    <button class="admin-button" onclick="window.location.href='{% url 'administrator' %}?section=job-position-section#';">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <span class="settings-text">Configure</span>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <main>
+        <div class="features-container">
+            <!-- Updated Search Candidate Feature -->
+            <div class="feature" style="text-align: center;">
+                <i class="fas fa-search" style="font-size: 52px; color: #ffc107; margin-bottom: 20px;"></i>
+                <h2 style="font-size: 26px; margin-bottom: 10px; color: #044f81;">Search Candidate</h2>
+                <form action="{% url 'search_candidate' %}" method="GET" style="margin-bottom: 20px;">
+                    <input type="text" name="mobile_number" placeholder="Enter Mobile Number" style="padding: 10px; width: 80%; border-radius: 5px; border: 1px solid #ccc;" required>
+                    <button type="submit" style="padding: 10px 20px; background-color: #044f81; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Search</button>
+                </form>
+            </div>
+            <div class="feature zoom-link" id="zoomLinkDiv">
+                <i class="fas fa-clipboard-check"></i>
+                <h2>Launch Zoom Meeting</h2>
+                <p>Automate your screening process and focus on the most qualified candidates.</p>
+            </div>
+            
+            <div class="feature view-360-link" id="view360LinkDiv">
+                <i class="fas fa-chart-line"></i>
+                <h2>360 View</h2>
+                <p>Track your hiring performance and make data-driven decisions to improve your recruitment strategy.</p>
+            </div>
+            
+        </div>
+    </main>
+    
+    <!-- Modal -->
+    <div id="helpModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Need Help?</h2>
+            <p>Please contact the IT department or send a mail to <a href="mailto:developers@iiclakshya.com">developers@iiclakshya.com</a>.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>Copyright © 2024 All rights reserved with Learnfluence Education Private Limited</p>
+        <div class="footer-buttons">
+            <a href="#" id="faqButton">FAQ</a>
+            <a href="#" id="userGuideButton">Userguide</a>
+            <a href="#" id="helpButton">Help</a>
+        </div>
+    </footer>
+
+    <!-- Sidebar with Floating Buttons -->
+    <div class="sidebar" id="sidebar">
+        <div class="floating-button whatsapp" id="whatsappButton" data-tooltip="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </div>
+        <div class="floating-button linkedin" id="linkedinButton" data-tooltip="LinkedIn">
+            <i class="fab fa-linkedin"></i>
+        </div>
+        <div class="floating-button shine" id="shineButton" data-tooltip="Shine">
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="floating-button indeed" id="indeedButton" data-tooltip="Indeed">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="floating-button timesjob" id="timesJobButton" data-tooltip="TimesJobs">
+            <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="floating-button gmeet" id="gmeetButton" data-tooltip="Google Meet">
+            <i class="fas fa-video"></i>
+        </div>
+        <div class="floating-button teams" id="teamsButton" data-tooltip="Microsoft Teams">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="floating-button youtube" id="youtubeButton" data-tooltip="YouTube">
+            <i class="fab fa-youtube"></i>
+        </div>
+        <div class="floating-button twitter" id="twitterButton" data-tooltip="Twitter">
+            <i class="fab fa-twitter"></i>
+        </div>
+        <div class="floating-button facebook" id="facebookButton" data-tooltip="Facebook">
+            <i class="fab fa-facebook-f"></i>
+        </div>
+        <div class="floating-button website" id="websiteButton" data-tooltip="Website">
+            <i class="fas fa-globe"></i>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const zoomLinkDiv = document.getElementById('zoomLinkDiv');
+            const view360LinkDiv = document.getElementById('view360LinkDiv');
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            const whatsappButton = document.getElementById('whatsappButton');
+            const linkedinButton = document.getElementById('linkedinButton');
+            const shineButton = document.getElementById('shineButton');
+            const indeedButton = document.getElementById('indeedButton');
+            const timesJobButton = document.getElementById('timesJobButton');
+            const gmeetButton = document.getElementById('gmeetButton');
+            const teamsButton = document.getElementById('teamsButton');
+            const youtubeButton = document.getElementById('youtubeButton');
+            const twitterButton = document.getElementById('twitterButton');
+            const facebookButton = document.getElementById('facebookButton');
+            const websiteButton = document.getElementById('websiteButton');
+            const sidebar = document.getElementById('sidebar');
+            const helpModal = document.getElementById('helpModal');
+            const helpButton = document.getElementById('helpButton');
+            const closeModal = document.querySelector('.close');
+
+            document.addEventListener('mousemove', function(event) {
+                if (event.clientX > window.innerWidth - 100) {
+                    sidebar.style.right = '0';
+                } else {
+                    sidebar.style.right = '-60px';
+                }
+            });
+
+            if (zoomLinkDiv) {
+                zoomLinkDiv.addEventListener('click', function() {
+                    console.log("Zoom link clicked");
+                    window.open('https://zoom.us/signin#/login', '_blank');
+                });
+            } else {
+                console.log("Zoom link element not found");
+            }
+
+            if (view360LinkDiv) {
+                view360LinkDiv.addEventListener('click', function() {
+                    console.log("360 View link clicked");
+                    window.location.href = "{% url 'view_360' %}";
+                });
+            } else {
+                console.log("360 View link element not found");
+            }
+
+            if (copyLinkBtn) {
+                copyLinkBtn.addEventListener('click', function() {
+                    console.log("Copy link button clicked");
+                    const applyLink = 'http://127.0.0.1:8000/submit/';
+                    navigator.clipboard.writeText(applyLink).then(function() {
+                        copyLinkBtn.classList.add('copied');
+                        copyLinkBtn.innerHTML = '<i class="fas fa-check"></i> Link Copied';
+                        console.log("Link copied to clipboard");
+                    }, function(err) {
+                        console.error('Could not copy text: ', err);
+                    });
+                });
+            } else {
+                console.log("Copy link button not found");
+            }
+
+            if (whatsappButton) {
+                whatsappButton.addEventListener('click', function() {
+                    console.log("WhatsApp button clicked");
+                    const whatsappUrl = 'https://web.whatsapp.com/';
+                    window.open(whatsappUrl, '_blank');
+                });
+            } else {
+                console.log("WhatsApp button not found");
+            }
+
+            if (linkedinButton) {
+                linkedinButton.addEventListener('click', function() {
+                    console.log("LinkedIn button clicked");
+                    window.open('https://www.linkedin.com', '_blank');
+                });
+            } else {
+                console.log("LinkedIn button not found");
+            }
+
+            if (shineButton) {
+                shineButton.addEventListener('click', function() {
+                    console.log("Shine button clicked");
+                    window.open('https://www.shine.com', '_blank');
+                });
+            } else {
+                console.log("Shine button not found");
+            }
+
+            if (indeedButton) {
+                indeedButton.addEventListener('click', function() {
+                    console.log("Indeed button clicked");
+                    window.open('https://www.indeed.com', '_blank');
+                });
+            } else {
+                console.log("Indeed button not found");
+            }
+
+            if (timesJobButton) {
+                timesJobButton.addEventListener('click', function() {
+                    console.log("Times Job button clicked");
+                    window.open('https://www.timesjobs.com', '_blank');
+                });
+            } else {
+                console.log("Times Job button not found");
+            }
+
+            if (gmeetButton) {
+                gmeetButton.addEventListener('click', function() {
+                    console.log("Google Meet button clicked");
+                    window.open('https://meet.google.com/', '_blank');
+                });
+            } else {
+                console.log("Google Meet button not found");
+            }
+
+            if (teamsButton) {
+                teamsButton.addEventListener('click', function() {
+                    console.log("Microsoft Teams button clicked");
+                    window.open('https://teams.microsoft.com/', '_blank');
+                });
+            } else {
+                console.log("Microsoft Teams button not found");
+            }
+
+            if (youtubeButton) {
+                youtubeButton.addEventListener('click', function() {
+                    console.log("YouTube button clicked");
+                    window.open('https://www.youtube.com', '_blank');
+                });
+            } else {
+                console.log("YouTube button not found");
+            }
+
+            if (twitterButton) {
+                twitterButton.addEventListener('click', function() {
+                    console.log("Twitter button clicked");
+                    window.open('https://www.twitter.com', '_blank');
+                });
+            } else {
+                console.log("Twitter button not found");
+            }
+
+            if (facebookButton) {
+                facebookButton.addEventListener('click', function() {
+                    console.log("Facebook button clicked");
+                    window.open('https://www.facebook.com', '_blank');
+                });
+            } else {
+                console.log("Facebook button not found");
+            }
+
+            if (websiteButton) {
+                websiteButton.addEventListener('click', function() {
+                    console.log("Website button clicked");
+                    window.open('https://lakshyacommerce.com/', '_blank');
+                });
+            } else {
+                console.log("Website button not found");
+            }
+
+            if (helpButton) {
+                helpButton.addEventListener('click', function() {
+                    helpModal.style.display = 'block';
+                });
+            }
+
+            if (closeModal) {
+                closeModal.addEventListener('click', function() {
+                    helpModal.style.display = 'none';
+                });
+            }
+
+            window.addEventListener('click', function(event) {
+                if (event.target == helpModal) {
+                    helpModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

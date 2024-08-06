@@ -1,0 +1,404 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Candidates</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Body style */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+        /* Container style */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+        /* Heading style */
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #044f81;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        /* List style */
+        ul {
+            padding-left: 0;
+            margin-bottom: 0;
+        }
+        /* List item style */
+        li {
+            list-style: none;
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fff;
+        }
+        /* Candidate link style */
+        .candidate-link {
+            color: #044f81;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        /* Candidate link hover style */
+        .candidate-link:hover {
+            color: #00284e;
+        }
+        /* Filter section style */
+        .filter-section {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .filter-heading {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #044f81;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .form-group label {
+            color: #044f81;
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #044f81;
+            border-color: #044f81;
+        }
+        .btn-primary:hover {
+            background-color: #00284e;
+            border-color: #00284e;
+        }
+        /* Logo style */
+        .logo {
+            width: 250px; /* Adjust logo width as needed */
+            margin-right: 10px; /* Add margin to separate logo from text */
+            margin-top: 10px; /* Adjust logo margin from top */
+            filter: brightness(0) invert(1); /* Make the logo white */
+            position: absolute; /* Position the logo absolutely */
+            top: 0; /* Align logo to the top */
+            left: 0; /* Align logo to the left */
+        }
+        /* Header style */
+        header {
+            background-color: #044f81;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px; /* Added margin at the bottom */
+            position: relative; /* Add position relative to header */
+            height: 80px; /* Set header height */
+            width: 100%; /* Set header width */
+        }
+        /* Footer */
+        footer {
+            background-color: #044f81;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        /* Center "Select All" button */
+.text-center {
+    text-align: center;
+}
+
+/* "Select All" button style */
+#select-all-btn {
+    background-color: #044f81;
+    border: none;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px; /* Adjust spacing */
+    cursor: pointer;
+    outline: none; /* Remove outline */
+}
+
+#select-all-btn:hover {
+    text-decoration: none; /* Remove underline on hover */
+}
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{% url 'home' %}">
+            <img src="{% static 'candidates/logoo.png' %}" alt="Hire-Pro Logo" class="logo">
+        </a>
+                <h1 style="color: #fff;">Manage Candidates</h1>
+    </header>
+    <div class="container">
+        <!-- Filter section -->
+        <div class="filter-section card">
+            <div class="card-body">
+                <h2 class="filter-heading">Filter Candidates</h2>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="start-date-filter">Start Date:</label>
+                            <input type="date" id="start-date-filter" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="end-date-filter">End Date:</label>
+                            <input type="date" id="end-date-filter" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="job-title-filter">Job Title:</label>
+                            <select id="job-title-filter" class="form-control">
+                                <option value="">All</option>
+                                <option value="Academic Coordinator">Academic Coordinator</option>
+                                <option value="Academic Counsellor / Sales Exec">Academic Counsellor / Sales Exec</option>
+                                <option value="Academic Manager">Academic Manager</option>
+                                <option value="ACCAMentors">ACCAMentors</option>
+                                <option value="Branch Manager">Branch Manager</option>
+                                <option value="Brand & PR Manager">Brand & PR Manager</option>
+                                <option value="CA Mentors">CA Mentors</option>
+                                <option value="CMA Mentors">CMA Mentors</option>
+                                <option value="CMA USMentors">CMA USMentors</option>
+                                <option value="CS Mentors">CS Mentors</option>
+                                <option value="Customer Support Executive">Customer Support Executive</option>
+                                <option value="Digital Marketing Executive">Digital Marketing Executive</option>
+                                <option value="Finance Operations Executive">Finance Operations Executive</option>
+                                <option value="Front Office">Front Office</option>
+                                <option value="IT Manager">IT Manager</option>
+                                <option value="Offline Marketing Executive">Offline Marketing Executive</option>
+                                <option value="Online Coordinator">Online Coordinator</option>
+                                <option value="QA / Audit (All South Indian Languages)">QA / Audit (All South Indian Languages)</option>
+                                <option value="Regional / Snr Manager (Online Ops)">Regional / Snr Manager (Online Ops)</option>
+                                <option value="Sales Manager / AM (Central)">Sales Manager / AM (Central)</option>
+                                <option value="Sales Manager / AM (Mumbai)">Sales Manager / AM (Mumbai)</option>
+                                <option value="Sales Manager / AM (North)">Sales Manager / AM (North)</option>
+                                <option value="Sales Manager / AM (South)">Sales Manager / AM (South)</option>
+                                <option value="TL - Offline Marketing">TL - Offline Marketing</option>
+                                <option value="TL -Digital Marketing">TL -Digital Marketing</option>
+                                <!-- Add job title options here -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="location-filter">Location:</label>
+                            <select id="location-filter" class="form-control">
+                                <option value="">All</option>
+                                <option value="Kochi">Kochi</option>
+                                <option value="Calicut">Calicut</option>
+                                <option value="Kannur">Kannur</option>
+                                <option value="Kottayam">Kottayam</option>
+                                <option value="Trivandrum">Trivandrum</option>
+                                <option value="Thrissur">Thrissur</option>
+                                <option value="Bangalore">Bangalore</option>
+                                <option value="Dubai">Dubai</option>
+                                <option value="Kolkata">Kolkata</option>
+                                <option value="Delhi">Delhi</option>
+                                <!-- Add location options here -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button id="apply-filter-btn" class="btn btn-primary">APPLY FILTER</button>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between mb-3">
+            <!-- Select All button -->
+            <div>
+                <button id="select-all-btn" class="btn btn-primary">SELECT ALL</button>
+            </div>
+            <!-- Download button -->
+            <div>
+                <button id="download-btn" class="btn btn-primary" style="background-color: #21ab2d; color: rgb(255, 255, 255); border-color: transparent; font-weight: bold;">DOWNLOAD</button>
+            </div>
+            
+            
+        </div>
+        <!-- Candidate list -->
+        <ul id="candidate-list">
+            {% for candidate in candidates %}
+                <li class="candidate-item" data-id="{{ candidate.id }}" data-job-title="{{ candidate.job_title }}" data-notice-period="{{ candidate.notice_period }}" data-stage="{{ candidate.stage }}" data-sub-stage="{{ candidate.sub_stage }}" data-source="{{ candidate.source }}" data-position-status="{{ candidate.position_status }}" data-location="{{ candidate.location }}" data-interview-status="{{ candidate.interview_status }}" data-interview-date="{{ candidate.interview_date }}" data-interviewer="{{ candidate.interviewer }}" data-resume="{{ candidate.resume }}" data-sourcer="{{ candidate.sourcer }}" data-contact-number="{{ candidate.contact_number }}" data-email-id="{{ candidate.email_id }}" data-current-company="{{ candidate.current_company }}" data-current-position="{{ candidate.current_position }}" data-experience-years-months="{{ candidate.experience_years_months }}" data-relevant-experience="{{ candidate.relevant_experience }}" data-sourced-from="{{ candidate.sourced_from }}" data-current-salary-lpa="{{ candidate.current_salary_lpa }}" data-expected-salary-lpa="{{ candidate.expected_salary_lpa }}" data-other-offers-lpa="{{ candidate.other_offers_lpa }}" data-last-working-day="{{ candidate.last_working_day }}" data-internal-screening="{{ candidate.internal_screening }}" data-date-of-interview-2="{{ candidate.date_of_interview_2 }}" data-date-of-interview-3="{{ candidate.date_of_interview_3 }}" data-remark="{{ candidate.remark }}" data-evaluation-link="{{ candidate.evaluation_link }}">
+                    <input type="checkbox" class="candidate-checkbox" value="{{ candidate.id }}"> <!-- Add a checkbox for each candidate -->
+                    <a href="{% url 'candidate_detail' candidate.id %}" class="candidate-link">{{ candidate.name }} - {{ candidate.job_title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <!-- Pagination -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if candidates.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">&laquo;</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ candidates.previous_page_number }}">{{ candidates.previous_page_number }}</a>
+            </li>
+        {% endif %}
+        <li class="page-item active"><a class="page-link" href="#">{{ candidates.number }}</a></li>
+        {% if candidates.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ candidates.next_page_number }}">{{ candidates.next_page_number }}</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ candidates.paginator.num_pages }}">&raquo;</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // JavaScript for filtering candidates based on interview date range, job title, and location
+        document.getElementById('apply-filter-btn').addEventListener('click', function() {
+            var startDate = new Date(document.getElementById('start-date-filter').value);
+            var endDate = new Date(document.getElementById('end-date-filter').value);
+            var jobTitle = document.getElementById('job-title-filter').value;
+            var location = document.getElementById('location-filter').value;
+
+            console.log('Start Date:', startDate);
+            console.log('End Date:', endDate);
+            console.log('Job Title:', jobTitle);
+            console.log('Location:', location);
+
+            var candidateItems = document.querySelectorAll('.candidate-item');
+            candidateItems.forEach(function(item) {
+                var itemDate = new Date(item.getAttribute('data-interview-date'));
+                var itemJobTitle = item.getAttribute('data-job-title');
+                var itemLocation = item.getAttribute('data-location');
+
+                console.log('Item Date:', itemDate);
+                console.log('Item Job Title:', itemJobTitle);
+                console.log('Item Location:', itemLocation);
+
+                var dateMatch = (!startDate || !endDate) || (itemDate >= startDate && itemDate <= endDate);
+                var jobTitleMatch = !jobTitle || jobTitle === itemJobTitle;
+                var locationMatch = !location || location === itemLocation;
+
+                if (dateMatch && jobTitleMatch && locationMatch) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // JavaScript for selecting all candidates
+        document.getElementById('select-all-btn').addEventListener('click', function() {
+            var checkboxes = document.querySelectorAll('.candidate-checkbox');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = true;
+            });
+        });
+
+        // JavaScript for downloading selected candidates as an Excel file
+        document.getElementById('download-btn').addEventListener('click', function() {
+            var selectedCandidates = [];
+            var checkboxes = document.querySelectorAll('.candidate-checkbox');
+           
+            checkboxes.forEach(function(checkbox) {
+                if (checkbox.checked) {
+                    var candidateId = checkbox.value;
+                    var candidateItem = document.querySelector('.candidate-item[data-id="' + candidateId + '"]');
+                    var candidateName = candidateItem.querySelector('.candidate-link').innerText;
+                    var candidateJobTitle = candidateItem.getAttribute('data-job-title');
+                    var candidateNoticePeriod = candidateItem.getAttribute('data-notice-period');
+                    var candidateStage = candidateItem.getAttribute('data-stage');
+                    var candidateSubStage = candidateItem.getAttribute('data-sub-stage');
+                    var candidateSource = candidateItem.getAttribute('data-source');
+                    var candidatePositionStatus = candidateItem.getAttribute('data-position-status');
+                    var candidateLocation = candidateItem.getAttribute('data-location');
+                    var candidateInterviewStatus = candidateItem.getAttribute('data-interview-status');
+                    var candidateInterviewDate = candidateItem.getAttribute('data-interview-date');
+                    var candidateInterviewer = candidateItem.getAttribute('data-interviewer');
+                    var candidateSourcer = candidateItem.getAttribute('data-sourcer');
+                    var candidateContactNumber = candidateItem.getAttribute('data-contact-number');
+                    var candidateEmail = candidateItem.getAttribute('data-email-id');
+                    var candidateCurrentCompany = candidateItem.getAttribute('data-current-company');
+                    var candidateCurrentPosition = candidateItem.getAttribute('data-current-position');
+                    var candidateExperienceYearsMonths = candidateItem.getAttribute('data-experience-years-months');
+                    var candidateRelevantExperience = candidateItem.getAttribute('data-relevant-experience');
+                    var candidateSourcedFrom = candidateItem.getAttribute('data-sourced-from');
+                    var candidateCurrentSalaryLpa = candidateItem.getAttribute('data-current-salary-lpa');
+                    var candidateExpectedSalaryLpa = candidateItem.getAttribute('data-expected-salary-lpa');
+                    var candidateOtherOffersLpa = candidateItem.getAttribute('data-other-offers-lpa');
+                    var candidateLastWorkingDay = candidateItem.getAttribute('data-last-working-day');
+                    var candidateInternalScreening = candidateItem.getAttribute('data-internal-screening');
+                    var candidateDateOfInterview2 = candidateItem.getAttribute('data-date-of-interview-2');
+                    var candidateDateOfInterview3 = candidateItem.getAttribute('data-date-of-interview-3');
+                    var candidateRemark = candidateItem.getAttribute('data-remark');
+                    var candidateEvaluationLink = candidateItem.getAttribute('data-evaluation-link');
+                   
+                    selectedCandidates.push({
+                        name: candidateName,
+                        job_title: candidateJobTitle,
+                        notice_period: candidateNoticePeriod,
+                        stage: candidateStage,
+                        sub_stage: candidateSubStage,
+                        source: candidateSource,
+                        position_status: candidatePositionStatus,
+                        location: candidateLocation,
+                        interview_status: candidateInterviewStatus,
+                        interview_date: candidateInterviewDate,
+                        interviewer: candidateInterviewer,
+                        sourcer: candidateSourcer,
+                        contact_number: candidateContactNumber,
+                        email_id: candidateEmail,
+                        current_company: candidateCurrentCompany,
+                        current_position: candidateCurrentPosition,
+                        experience_years_months: candidateExperienceYearsMonths,
+                        relevant_experience: candidateRelevantExperience,
+                        sourced_from: candidateSourcedFrom,
+                        current_salary_lpa: candidateCurrentSalaryLpa,
+                        expected_salary_lpa: candidateExpectedSalaryLpa,
+                        other_offers_lpa: candidateOtherOffersLpa,
+                        last_working_day: candidateLastWorkingDay,
+                        internal_screening: candidateInternalScreening,
+                        date_of_interview_2: candidateDateOfInterview2,
+                        date_of_interview_3: candidateDateOfInterview3,
+                        remark: candidateRemark,
+                        evaluation_link: candidateEvaluationLink
+                    });
+                }
+            });
+
+            if (selectedCandidates.length === 0) {
+                alert("Please select at least one candidate to download.");
+                return;
+            }
+
+            // Create a new Excel file
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.json_to_sheet(selectedCandidates);
+            XLSX.utils.book_append_sheet(wb, ws, "Candidates");
+
+            // Save the file
+            var today = new Date();
+            var filename = "selected_candidates_" + today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + ".xlsx";
+            XLSX.writeFile(wb, filename);
+        });
+    </script>
+</body>
+</html>

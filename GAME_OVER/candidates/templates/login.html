@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Google Fonts - Open Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #F0F2F5;
+            font-family: 'Open Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .welcome-section h1 {
+            font-size: 48px; /* Larger font size */
+            font-weight: bold;
+        }
+        .welcome-section h1 span:first-child {
+            color: #001f3f; /* Dark Blue */
+        }
+        .welcome-section h1 span:last-child {
+            color: #FFD700; /* Golden Yellow */
+        }
+        .container-fluid {
+            display: flex;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
+            max-width: 1200px; /* Increased width */
+            width: 100%;
+            height: 60%;
+            padding: 0;
+            flex-direction: row;
+        }
+        .image-section {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #F0F2F5;
+            border-radius: 15px 0 0 15px;
+            padding: 30px; /* Increased padding */
+        }
+        .image-section img {
+            width: 90%; /* Slightly larger image */
+            height: auto;
+            border-radius: 10px;
+        }
+        .form-section {
+            width: 50%;
+            padding: 80px; /* Increased padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #fff;
+            border-radius: 0 15px 15px 0;
+            text-align: center;
+        }
+        .form-section .logo {
+            width: 250px; /* Larger logo */
+            height: auto;
+            margin-bottom: 30px;
+            margin-left: auto;
+            margin-right: auto; /* Center align */
+        }
+        .form-section .btn-login {
+            background-color: #FFD700; /* Golden Yellow */
+            border-color: #FFD700;
+            color: #fff;
+            font-weight: 700;
+            font-size: 22px; /* Larger font size */
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            padding: 15px 0;
+            border-radius: 8px;
+            width: 100%;
+        }
+        .form-section .btn-login:hover {
+            background-color: #FFC300;
+            border-color: #FFC300;
+            transform: translateY(-3px);
+        }
+        .form-section .form-control {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 18px; /* Increased padding */
+            font-size: 20px; /* Larger font size */
+            margin-bottom: 25px; /* Increased margin */
+        }
+        /* Loader Animation */
+        .loader {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loader img {
+            width: 200px; /* Larger size */
+            height: auto;
+            animation: spin 2s linear infinite; /* 2 seconds spin */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-section">
+        <h1><span>Welcome to</span> <span>HirePro</span></h1>
+    </div>
+
+    <!-- Loading Animation -->
+    <div class="loader" id="loader">
+        <img src="{% static 'candidates/emblem.png' %}" alt="Loading">
+    </div>
+
+    <div class="container-fluid" id="content">
+        <div class="image-section">
+            <img src="{% static 'candidates/hi.png' %}" alt="Hi Image">
+        </div>
+        <div class="form-section">
+            <img src="{% static 'candidates/logoo.png' %}" alt="Logo" class="logo">
+            <form id="loginForm" action="{% url 'login' %}" method="post" onsubmit="showLoader(event)">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-login">Login</button>
+            </form>
+            <!-- Display messages -->
+            {% if messages %}
+                <div class="mt-3">
+                    {% for message in messages %}
+                        <div class="alert alert-warning">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function showLoader(event) {
+            event.preventDefault(); // Stop form submission
+            document.getElementById("loader").style.display = "flex"; // Show loader
+            document.getElementById("content").style.display = "none"; // Hide login form
+            setTimeout(() => {
+                document.getElementById("loginForm").submit(); // Submit the form after showing loader
+            }, 2000); // 2 seconds delay
+        }
+
+        function togglePassword() {
+            var passwordInput = document.getElementById("password");
+            var passwordToggle = document.querySelector(".password-toggle i");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                passwordToggle.classList.remove("fa-eye");
+                passwordToggle.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                passwordToggle.classList.remove("fa-eye-slash");
+                passwordToggle.classList.add("fa-eye");
+            }
+        }
+    </script>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

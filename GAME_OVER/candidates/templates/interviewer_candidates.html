@@ -1,0 +1,310 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ interviewer }}'s Candidates</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding-bottom: 50px;
+            color: #333;
+        }
+        header {
+            background-color: #044f81;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .logo {
+            width: 250px;
+            margin-right: 10px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 20px;
+            filter: brightness(0) invert(1);
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #selectAllBtn, #downloadBtn {
+            background-color: #044f81;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        #selectAllBtn:hover, #downloadBtn:hover {
+            background-color: #00284e;
+        }
+        footer {
+            background-color: #044f81;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            z-index: 999;
+        }
+        td a {
+            color: #044f81;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        td a:hover {
+            text-decoration: none;
+        }
+        .button-container {
+            margin: 20px 0;
+            text-align: right;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding-left: 0;
+            list-style: none;
+            border-radius: 0.25rem;
+        }
+        .page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #044f81;
+            border-color: #044f81;
+        }
+        .page-link {
+            position: relative;
+            display: block;
+            color: #044f81;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            margin-left: -1px;
+        }
+        .page-link:hover {
+            z-index: 2;
+            color: #00284e;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="{% url 'home' %}">
+        <img src="{% static 'candidates/logoo.png' %}" alt="Hire-Pro Logo" class="logo">
+    </a>
+    <h1>{{ interviewer }}'s Candidates</h1>
+</header>
+
+<div class="button-container">
+    <button id="selectAllBtn">Select All</button>
+    <button id="downloadBtn">Download Excel</button>
+</div>
+
+<div id="table-container" class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Name</th>
+                <th>Job Title</th>
+                <th>Notice Period</th>
+                <th>Stage</th>
+                <th>Sub Stage</th>
+                <th>Source</th>
+                <th>Position Status</th>
+                <th>Location</th>
+                <th>Interview Status</th>
+                <th>Interview Date</th>
+                <th>Interviewer</th>
+                <th>Resume</th>
+                <th>Sourcer</th>
+                <th>Contact Number</th>
+                <th>Email ID</th>
+                <th>Current Company</th>
+                <th>Current Position</th>
+                <th>Experience (Years/Months)</th>
+                <th>Relevant Experience</th>
+                <!-- <th>Sourced From</th> -->
+                <th>Current Salary (LPA)</th>
+                <th>Expected Salary (LPA)</th>
+                <th>Other Offers (LPA)</th>
+                <th>Last Working Day</th>
+                <th>Internal Screening</th>
+                <th>Date of Interview 2</th>
+                <th>Date of Interview 3</th>
+                <th>Remark</th>
+                <th>Evaluation Link</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            {% for candidate in candidates %}
+            <tr>
+                <td><input type="checkbox" name="selectedCandidates" value="{{ candidate.id }}"></td>
+                <td><a href="{% url 'candidate_detail' candidate_id=candidate.id %}" target="_blank">{{ candidate.name }}</a></td>
+                <td>{{ candidate.job_title }}</td>
+                <td>{{ candidate.notice_period }}</td>
+                <td>{{ candidate.stage }}</td>
+                <td>{{ candidate.sub_stage }}</td>
+                <td>{{ candidate.source }}</td>
+                <td>{{ candidate.position_status }}</td>
+                <td>{{ candidate.location }}</td>
+                <td>{{ candidate.interview_status }}</td>
+                <td>{{ candidate.interview_date }}</td>
+                <td>{{ candidate.interviewer }}</td>
+                <td><a href="{{ candidate.resume.url }}">{{ candidate.resume.name }}</a></td>
+                <td>{{ candidate.sourcer }}</td>
+                <td>{{ candidate.contact_number }}</td>
+                <td>{{ candidate.email_id }}</td>
+                <td>{{ candidate.current_company }}</td>
+                <td>{{ candidate.current_position }}</td>
+                <td>{{ candidate.experience_years_months }}</td>
+                <td>{{ candidate.relevant_experience }}</td>
+                <td>{{ candidate.sourced_from }}</td>
+                <td>{{ candidate.current_salary_lpa }}</td>
+                <td>{{ candidate.expected_salary_lpa }}</td>
+                <td>{{ candidate.other_offers_lpa }}</td>
+                <td>{{ candidate.last_working_day }}</td>
+                <td>{{ candidate.internal_screening }}</td>
+                <td>{{ candidate.date_of_interview_2 }}</td>
+                <td>{{ candidate.date_of_interview_3 }}</td>
+                <td>{{ candidate.remark }}</td>
+                <td>{{ candidate.evaluation_link }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<nav>
+    <ul id="pagination" class="pagination justify-content-center">
+        <!-- Pagination controls will be dynamically generated here -->
+    </ul>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const rowsPerPage = 10;
+        let currentPage = 1;
+        const tableBody = document.getElementById('table-body');
+        const pagination = document.getElementById('pagination');
+        const rows = Array.from(tableBody.querySelectorAll('tr'));
+        
+        function displayRows(page) {
+            const start = (page - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            rows.forEach((row, index) => {
+                row.style.display = index >= start && index < end ? '' : 'none';
+            });
+        }
+
+        function setupPagination() {
+            pagination.innerHTML = '';
+            const pageCount = Math.ceil(rows.length / rowsPerPage);
+            for (let i = 1; i <= pageCount; i++) {
+                const li = document.createElement('li');
+                li.className = 'page-item' + (i === currentPage ? ' active' : '');
+                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                li.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentPage = i;
+                    displayRows(currentPage);
+                    setupPagination();
+                });
+                pagination.appendChild(li);
+            }
+        }
+
+        document.getElementById('selectAllBtn').addEventListener('click', function() {
+            document.querySelectorAll("input[name='selectedCandidates']").forEach(function(checkbox) {
+                checkbox.checked = true;
+            });
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            var selectedCandidates = [];
+            document.querySelectorAll("input[name='selectedCandidates']:checked").forEach(function(checkbox) {
+                var candidateRow = checkbox.closest('tr');
+                var candidate = {
+                    name: candidateRow.querySelector('td:nth-child(2) a').innerText,
+                    job_title: candidateRow.querySelector('td:nth-child(3)').innerText,
+                    notice_period: candidateRow.querySelector('td:nth-child(4)').innerText,
+                    stage: candidateRow.querySelector('td:nth-child(5)').innerText,
+                    sub_stage: candidateRow.querySelector('td:nth-child(6)').innerText,
+                    source: candidateRow.querySelector('td:nth-child(7)').innerText,
+                    position_status: candidateRow.querySelector('td:nth-child(8)').innerText,
+                    location: candidateRow.querySelector('td:nth-child(9)').innerText,
+                    interview_status: candidateRow.querySelector('td:nth-child(10)').innerText,
+                    interview_date: candidateRow.querySelector('td:nth-child(11)').innerText,
+                    interviewer: candidateRow.querySelector('td:nth-child(12)').innerText,
+                    resume: candidateRow.querySelector('td:nth-child(13) a').innerText,
+                    sourcer: candidateRow.querySelector('td:nth-child(14)').innerText,
+                    contact_number: candidateRow.querySelector('td:nth-child(15)').innerText,
+                    email_id: candidateRow.querySelector('td:nth-child(16)').innerText,
+                    current_company: candidateRow.querySelector('td:nth-child(17)').innerText,
+                    current_position: candidateRow.querySelector('td:nth-child(18)').innerText,
+                    experience_years_months: candidateRow.querySelector('td:nth-child(19)').innerText,
+                    relevant_experience: candidateRow.querySelector('td:nth-child(20)').innerText,
+                    sourced_from: candidateRow.querySelector('td:nth-child(21)').innerText,
+                    current_salary_lpa: candidateRow.querySelector('td:nth-child(22)').innerText,
+                    expected_salary_lpa: candidateRow.querySelector('td:nth-child(23)').innerText,
+                    other_offers_lpa: candidateRow.querySelector('td:nth-child(24)').innerText,
+                    last_working_day: candidateRow.querySelector('td:nth-child(25)').innerText,
+                    internal_screening: candidateRow.querySelector('td:nth-child(26)').innerText,
+                    date_of_interview_2: candidateRow.querySelector('td:nth-child(27)').innerText,
+                    date_of_interview_3: candidateRow.querySelector('td:nth-child(28)').innerText,
+                    remark: candidateRow.querySelector('td:nth-child(29)').innerText,
+                    evaluation_link: candidateRow.querySelector('td:nth-child(30)').innerText
+                };
+                selectedCandidates.push(candidate);
+            });
+
+            if (selectedCandidates.length === 0) {
+                alert("Please select at least one candidate to download.");
+                return;
+            }
+
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.json_to_sheet(selectedCandidates);
+            XLSX.utils.book_append_sheet(wb, ws, "Candidates");
+
+            var today = new Date();
+            var filename = "selected_candidates_" + today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + ".xlsx";
+            XLSX.writeFile(wb, filename);
+        });
+
+        displayRows(currentPage);
+        setupPagination();
+    });
+</script>
+</body>
+</html>

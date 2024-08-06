@@ -1,0 +1,367 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Resume</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('{% static "candidates/formback.jpg" %}') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .container h1 {
+            color: #333333;
+            font-size: 1.75rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group i {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #000000;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .form-control, .file-input, .custom-select {
+            border: 1px solid #ced4da;
+            border-radius: 30px;
+            padding: 1rem 1rem 1rem 2.5rem;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+            font-family: 'Roboto', sans-serif;
+            width: 100%;
+            height: auto;
+            background-color: white;
+        }
+
+        .form-control:focus, .file-input:focus, .custom-select:focus {
+            border-color: #000000;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-control::placeholder, .file-input::placeholder {
+            font-size: 1.25rem;
+            color: #999999;
+        }
+
+        .btn-custom {
+            background-color: #ffd700;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 2rem;
+            font-size: 1.25rem;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #e6be00;
+        }
+
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            padding: 20px;
+            border: none;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 10px;
+            animation: slideIn 0.5s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content h2 {
+            color: #333333;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p {
+            color: #333333;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content i {
+            color: #000000;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .file-label {
+            position: relative;
+            display: block;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 30px;
+            padding: 1rem 1rem 1rem 2.5rem;
+            font-size: 1.25rem;
+            color: #999999;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .file-label i {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #000000;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .footer {
+            margin-top: 20px;
+            color: #ffffff;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 1.5rem;
+            }
+
+            .container h1 {
+                font-size: 1.5rem;
+            }
+
+            .btn-custom {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="{% static 'candidates/logoo.png' %}" alt="Hire-Pro Logo" class="logo">
+        <h1>Submit Your Resume</h1>
+        <form id="resumeForm" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                <i class="fas fa-user"></i>
+                <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+            </div>
+            <div class="form-group">
+                <i class="fas fa-phone"></i>
+                <input type="text" name="phone" class="form-control" placeholder="Your Phone" required>
+            </div>
+            
+            <div class="form-group">
+                <i class="fas fa-briefcase"></i>
+                <select name="position" class="custom-select" required>
+                    <option value="" disabled selected>Select Position</option>
+                    {% for job in job_titles %}
+                    <option value="{{ job.id }}">{{ job.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <i class="fas fa-map-marker-alt"></i>
+                <select name="location" class="custom-select" required>
+                    <option value="" disabled selected>Select Branch</option>
+                    {% for location in branch_locations %}
+                    <option value="{{ location.id }}">{{ location.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+          
+            <div class="form-group">
+                <label class="file-label">
+                    <i class="fas fa-file-upload"></i>
+                    Choose file
+                    <input type="file" name="resume" class="file-input" required>
+                </label>
+            </div>
+            <button type="submit" class="btn btn-custom">Submit</button>
+        </form>
+    </div>
+
+    <div class="footer">
+        Copyright © 2024 All rights reserved with Learnfluence Education Private Limited
+    </div>
+
+    <!-- The Modal -->
+    <div id="thankYouModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <i class="fas fa-check-circle"></i>
+            <h2>Thank You!</h2>
+            <p>Your resume has been successfully submitted.</p>
+            <p>Our team will contact you soon.</p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        $(document).ready(function () {
+            var form = $('#resumeForm');
+            var modal = $('#thankYouModal');
+            var span = $('.close');
+
+            form.on('submit', function (event) {
+                event.preventDefault();
+
+                if (form[0].checkValidity() === false) {
+                    event.stopPropagation();
+                    form.addClass('was-validated');
+                    return;
+                }
+
+                var formData = new FormData(this);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        modal.show();
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
+                    },
+                    error: function (response) {
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+
+            span.on('click', function () {
+                modal.hide();
+            });
+
+            $(window).on('click', function (event) {
+                if (event.target == modal[0]) {
+                    modal.hide();
+                }
+            });
+
+            $('.file-label').on('click', function () {
+                $(this).find('.file-input').click();
+            });
+
+            $('.file-input').on('change', function () {
+                var fileName = $(this).val().split('\\').pop();
+                $(this).siblings('.file-label').text(fileName);
+            });
+        });
+    </script>
+</body>
+
+</html>

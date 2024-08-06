@@ -1,0 +1,368 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Submissions</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar {
+            background-color: #002855;
+            /* Dark Blue */
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding: 20px;
+            width: 300px;
+            overflow-y: auto;
+        }
+
+        .sidebar h4 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #004080;
+            /* Slightly lighter dark blue */
+            padding-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            white-space: nowrap;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #ffc107;
+            /* Golden Yellow */
+            color: #002855;
+            /* Dark Blue */
+        }
+
+        .content {
+            margin-left: 320px;
+            padding: 20px;
+        }
+
+        .content h4 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #002855;
+            /* Dark Blue */
+            padding-bottom: 10px;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            width: 100%;
+        }
+
+        .filter-form-container {
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .filter-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-form .form-group {
+            flex: 1;
+            margin-bottom: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-form .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-form .form-actions button,
+        .filter-form .form-actions a {
+            height: 38px;
+            /* Match the height of input fields */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            width: 38px;
+        }
+
+        .table-responsive {
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        .table thead th {
+            background-color: #002855;
+            /* Dark Blue */
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 40, 85, 0.1);
+            /* Light tint of dark blue */
+        }
+
+        .table td a {
+            color: #002855;
+            /* Dark Blue */
+            text-decoration: none;
+        }
+
+        .table td a:hover {
+            text-decoration: underline;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .pagination {
+            justify-content: center;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #002855;
+            border-color: #002855;
+        }
+
+        .pagination .page-link {
+            color: #002855;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #004080;
+            border-color: #004080;
+            color: #fff;
+        }
+
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            padding: 0;
+            border-radius: 50%;
+            font-size: 18px;
+        }
+
+        .btn-pagination-count {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+            margin-top: 5px;
+            margin-left: 10px;
+            height: 38px;
+            padding: 0 12px;
+        }
+
+        .btn-pagination-count:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+    </style>
+    <script>
+        function updatePaginationCount() {
+            let paginationCount = document.getElementById('pagination-count').value;
+            let currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('pagination_count', paginationCount);
+            window.location.href = currentUrl.href;
+        }
+
+        document.getElementById('select_all').addEventListener('change', function (event) {
+            var checkboxes = document.querySelectorAll('input[name="selected_candidates"]');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = event.target.checked;
+            });
+            document.getElementById('exportForm').elements['select_all'].value = event.target.checked ? 'true' : 'false';
+        });
+    </script>
+</head>
+
+<body>
+    <header>
+        <a href="{% url 'home' %}">
+            <img src="{% static 'candidates/logoo.png' %}" alt="Hire-Pro Logo" class="logo">
+        </a>
+    </header>
+
+    <div class="sidebar">
+        <h4>Job Positions</h4>
+        {% for position in positions %}
+        <a href="?position={{ position.id }}&branch={{ selected_branch }}&start_date={{ start_date }}&end_date={{ end_date }}"
+            class="{% if position.id|stringformat:'s' == selected_position %}active{% endif %}">{{ position.name }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="content">
+        <h4>Candidate Submissions{% if selected_position_name %} in "{{ selected_position_name }}"{% endif %}</h4>
+        <div class="filter-container">
+            <div class="filter-form-container">
+                <form method="GET" class="filter-form">
+                    <div class="form-group">
+                        <label for="branch">Branch</label>
+                        <select id="branch" name="branch" class="form-control">
+                            <option value="">All Branches</option>
+                            {% for branch in branches %}
+                              <option value="{{ branch.id|stringformat:'s' }}" {% if branch.id|stringformat:'s' == selected_branch %}selected{% endif %}>{{ branch.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Job Title</label>
+                        <select id="position" name="position" class="form-control">
+                            <option value="">All Positions</option>
+                            {% for position in positions %}
+                               <option value="{{ position.id|stringformat:'s' }}" {% if position.id|stringformat:'s' == selected_position %}selected{% endif %}>{{ position.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="start_date">Start Date</label>
+                        <input type="date" id="start_date" name="start_date" class="form-control"
+                            value="{{ start_date }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="end_date">End Date</label>
+                        <input type="date" id="end_date" name="end_date" class="form-control" value="{{ end_date }}">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-icon"><i
+                                class="fas fa-check-circle"></i></button>
+                        <a href="{% url 'view_submissions' %}" class="btn btn-warning btn-icon"><i
+                                class="fas fa-redo"></i></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <form method="POST" id="exportForm" action="{% url 'delete_submissions' %}">
+            {% csrf_token %}
+            <input type="hidden" name="select_all" value="false">
+            <div class="mb-3 d-flex align-items-center">
+                <select id="pagination-count" name="pagination_count" class="btn-pagination-count" onchange="updatePaginationCount()">
+                    <option value="10" {% if pagination_count == 10 %}selected{% endif %}>10</option>
+                    <option value="50" {% if pagination_count == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if pagination_count == 100 %}selected{% endif %}>100</option>
+                    <option value="200" {% if pagination_count == 200 %}selected{% endif %}>200</option>
+                    <option value="1000" {% if pagination_count == 1000 %}selected{% endif %}>1000</option>
+                </select>
+                <button type="submit" name="delete_selected" class="btn btn-danger ml-2"
+                    onclick="return confirm('Are you sure you want to delete the selected items?');">Delete
+                    Selected</button>
+                <button type="submit" name="export_selected" class="btn btn-success ml-2" formaction="{% url 'export_submissions' %}"><i class="fas fa-download"></i> Export</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="select_all"></th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Position</th>
+                            <th>Location</th>
+                            <th>Resume</th>
+                            <th>Submission Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for candidate in page_obj %}
+                        <tr>
+                            <td><input type="checkbox" name="selected_candidates" value="{{ candidate.id }}"></td>
+                            <td>{{ candidate.name }}</td>
+                            <td>{{ candidate.email }}</td>
+                            <td>{{ candidate.phone }}</td>
+                            <td>{{ candidate.position }}</td>
+                            <td>{{ candidate.location }}</td>
+                            <td><a href="{{ candidate.resume.url }}" target="_blank"><i class="fas fa-eye"></i> View</a></td>
+                            <td>{{ candidate.submission_date|date:"Y-m-d H:i:s" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <nav>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1&position={{ selected_position }}&branch={{ selected_branch }}&start_date={{ start_date }}&end_date={{ end_date }}" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&position={{ selected_position }}&branch={{ selected_branch }}&start_date={{ start_date }}&end_date={{ end_date }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}&position={{ selected_position }}&branch={{ selected_branch }}&start_date={{ start_date }}&end_date={{ end_date }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}&position={{ selected_position }}&branch={{ selected_branch }}&start_date={{ start_date }}&end_date={{ end_date }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&position={{ selected_position }}&branch={{ selected_branch }}&start_date={{ start_date }}&end_date={{ end_date }}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+        document.getElementById('select_all').addEventListener('change', function (event) {
+            var checkboxes = document.querySelectorAll('input[name="selected_candidates"]');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = event.target.checked;
+            });
+            document.getElementById('exportForm').elements['select_all'].value = event.target.checked ? 'true' : 'false';
+        });
+    </script>
+</body>
+
+</html>
